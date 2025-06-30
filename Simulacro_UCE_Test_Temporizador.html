@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simulacro UCE - Test con Temporizador</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  h1 { text-align: center; }
+  .question { margin-bottom: 15px; }
+  .options label { display: block; margin: 5px 0; }
+  #timer { font-size: 1.2em; font-weight: bold; color: #d9534f; text-align: center; margin-bottom: 20px; }
+  #result { margin-top: 20px; font-weight: bold; }
+  button { padding: 10px 20px; font-size: 1em; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>Simulacro UCE - Test con Temporizador</h1>
+<div id="timer">Tiempo restante: 10:00</div>
+<form id="quizForm">
+  <div class="question">
+    <p>1. ¿Cuál número sigue la secuencia? 3, 6, 12, 24, ___</p>
+    <div class="options">
+      <label><input type="radio" name="q1" value="a" required /> a) 36</label>
+      <label><input type="radio" name="q1" value="b" /> b) 38</label>
+      <label><input type="radio" name="q1" value="c" /> c) 48</label>
+      <label><input type="radio" name="q1" value="d" /> d) 50</label>
+    </div>
+  </div>
+  <div class="question">
+    <p>2. Si hoy es miércoles, ¿qué día será dentro de 45 días?</p>
+    <div class="options">
+      <label><input type="radio" name="q2" value="a" required /> a) Viernes</label>
+      <label><input type="radio" name="q2" value="b" /> b) Lunes</label>
+      <label><input type="radio" name="q2" value="c" /> c) Martes</label>
+      <label><input type="radio" name="q2" value="d" /> d) Domingo</label>
+    </div>
+  </div>
+  <div class="question">
+    <p>3. ¿Qué se puede inferir del texto? <br/>
+    "El sol apenas se alzaba cuando Lucía salió de casa con su mochila. Sabía que su esfuerzo pronto daría frutos, pues estudiar medicina había sido su sueño desde niña."</p>
+    <div class="options">
+      <label><input type="radio" name="q3" value="a" required /> a) Lucía es doctora.</label>
+      <label><input type="radio" name="q3" value="b" /> b) Lucía trabaja de noche.</label>
+      <label><input type="radio" name="q3" value="c" /> c) Lucía es perseverante.</label>
+      <label><input type="radio" name="q3" value="d" /> d) Lucía vive lejos de su universidad.</label>
+    </div>
+  </div>
+  <div class="question">
+    <p>4. ¿Cuál es el resultado de: (4 + 3) × 2 - 5?</p>
+    <div class="options">
+      <label><input type="radio" name="q4" value="a" required /> a) 9</label>
+      <label><input type="radio" name="q4" value="b" /> b) 11</label>
+      <label><input type="radio" name="q4" value="c" /> c) 7</label>
+      <label><input type="radio" name="q4" value="d" /> d) 14</label>
+    </div>
+  </div>
+  <div class="question">
+    <p>5. En una sala hay 12 filas con 8 sillas. ¿Cuántas personas pueden sentarse?</p>
+    <div class="options">
+      <label><input type="radio" name="q5" value="a" required /> a) 90</label>
+      <label><input type="radio" name="q5" value="b" /> b) 96</label>
+      <label><input type="radio" name="q5" value="c" /> c) 84</label>
+      <label><input type="radio" name="q5" value="d" /> d) 104</label>
+    </div>
+  </div>
+  <button type="submit">Enviar respuestas</button>
+</form>
+<div id="result"></div>
+
+<script>
+const correctAnswers = {
+  q1: 'c',
+  q2: 'b',
+  q3: 'c',
+  q4: 'a',
+  q5: 'b'
+};
+
+let timeLeft = 600; // 10 minutes in seconds
+const timerElement = document.getElementById('timer');
+const form = document.getElementById('quizForm');
+const resultDiv = document.getElementById('result');
+
+function updateTimer() {
+  let minutes = Math.floor(timeLeft / 60);
+  let seconds = timeLeft % 60;
+  timerElement.textContent = `Tiempo restante: ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+  if (timeLeft <= 0) {
+    clearInterval(timerInterval);
+    resultDiv.textContent = 'Se acabó el tiempo. Por favor, envía tus respuestas ahora.';
+    form.querySelector('button').disabled = false;
+  } else {
+    timeLeft--;
+  }
+}
+
+const timerInterval = setInterval(updateTimer, 1000);
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  clearInterval(timerInterval);
+
+  let score = 0;
+  for (const [key, value] of Object.entries(correctAnswers)) {
+    const userAnswer = form.elements[key].value;
+    if (userAnswer === value) {
+      score++;
+    }
+  }
+  const percentage = (score / Object.keys(correctAnswers).length) * 100;
+  resultDiv.textContent = `Obtuviste ${score} de ${Object.keys(correctAnswers).length} respuestas correctas. (${percentage}%)`;
+});
+</script>
+</body>
+</html>
